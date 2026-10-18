@@ -1,0 +1,96 @@
+// OgForge playground: builds the /api/og URL from the form, previews it, and renders copyable meta tags.
+(function () {
+  'use strict';
+  var FIELDS = ['template', 'theme', 'title', 'subtitle', 'label', 'emoji', 'site', 'author', 'logo', 'bg', 'fg', 'accent'];
+  var form = document.getElementById('f');
+  var img = document.getElementById('img');
+  var statusEl = document.getElementById('status');
+  var urlEl = document.getElementById('url');
+  var metaEl = document.getElementById('meta');
+  var timer = null, seq = 0, lastUrl = '', objUrl = null;
+  var $ = function (id) { return document.getElementById(id); };
+
+  // Prefill from the page's own query string (links from the home page).
+  var qs = new URLSearchParams(location.search);
+  if (qs.toString()) {
+    FIELDS.forEach(function (k) { if ($(k)) $(k).value = qs.get(k) || ''; });
+    if (!qs.get('template')) $('template').value = 'blog';
+  }
+
+  function hex(v) { v = (v || '').trim().replace(/^#/, ''); return /^([0-9a-f]{3}|[0-9a-f]{6})$/i.test(v) ? v.toLowerCase() : null; }
+  ['bg', 'fg', 'accent'].forEach(function (k) {
+    var pick = $(k + '-pick'), txt = $(k);
+    if (hex(txt.value)) { var h = hex(txt.value); pick.value = '#' + (h.length === 3 ? h.replace(/(.)/g, '$1$1') : h); }
+    pick.addEventListener('input', function () { txt.value = pick.value.slice(1); schedule(); });
+  });
+  $('reset').addEventListener('click', function () { ['bg', 'fg', 'accent'].forEach(function (k) { $(k).value = ''; }); schedule(); });
+
+  function buildUrl() {
+    var p = new URLSearchParams();
+    FIELDS.forEach(function (k) {
+      var el = $(k); if (!el) return;
+      var v = el.value.trim();
+      if (['bg', 'fg', 'accent'].indexOf(k) >= 0) v = v.replace(/^#/, '');
+      if (v) p.set(k, v);
+    });
+    return location.origin + '/api/og?' + p.toString().replace(/\+/g, '%20');
+  }
+  function esc(s) { return s.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;'); }
+  function metaTags(u) {
+    var title = $('title').value.trim() || 'Untitled', a = esc(u);
+    return '<meta property="og:title" content="' + esc(title) + '">\n' +
+      '<meta property="og:image" content="' + a + '">\n' +
+      '<meta property="og:image:width" content="1200">\n' +
+      '<meta property="og:image:height" content="630">\n' +
+      '<meta name="twitter:card" content="summary_large_image">\n' +
+      '<meta name="twitter:image" content="' + a + '">';
+  }
+  function setStatus(text, cls) { statusEl.textContent = text; statusEl.className = 'status' + (cls ? ' ' + cls : ''); }
+
+  function update() {
+    var u = buildUrl();
+    urlEl.value = u;
+    metaEl.value = metaTags(u);
+    if (u === lastUrl) return;
+    lastUrl = u;
+    var my = ++seq;
+    setStatus('Rendering…');
+    fetch(u).then(function (res) {
+      if (my !== seq) return null;
+      if (res.ok) {
+        var cache = res.headers.get('x-ogforge-cache') || '';
+        var warn = res.headers.get('x-ogforge-warning');
+        var cut = res.headers.get('x-ogforge-truncated');
+        return res.blob().then(function (b) {
+          if (my !== seq) return;
+          if (objUrl) URL.revokeObjectURL(objUrl);
+          objUrl = URL.createObjectURL(b);
+          img.src = objUrl;
+          var msg = 'Rendered (' + Math.round(b.size / 1024) + ' KB, cache: ' + cache + ').';
+          if (cut) msg += ' Truncated to fit: ' + cut + '.';
+          if (warn) msg += ' Warning: ' + warn + ' (logo skipped).';
+          setStatus(msg, warn ? 'bad' : 'good');
+        });
+      }
+      return res.json().then(function (j) {
+        if (my !== seq) return;
+        var e = (j && j.error) || {};
+        setStatus('Error ' + res.status + (e.code ? ' (' + e.code + ')' : '') + ': ' + (e.message || 'request failed'), 'bad');
+      }, function () { setStatus('Error ' + res.status, 'bad'); });
+    }).catch(function () { if (my === seq) setStatus('Network error. Please retry.', 'bad'); });
+  }
+  function schedule() { clearTimeout(timer); timer = setTimeout(update, 650); }
+  form.addEventListener('input', schedule);
+  form.addEventListener('change', schedule);
+  form.addEventListener('submit', function (e) { e.preventDefault(); update(); });
+
+  document.querySelectorAll('[data-copy]').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var el = $(btn.getAttribute('data-copy'));
+      var done = function () { var t = btn.textContent; btn.textContent = 'Copied'; setTimeout(function () { btn.textContent = t; }, 1200); };
+      if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(el.value).then(done, function () { el.select(); document.execCommand('copy'); done(); });
+      else { el.select(); document.execCommand('copy'); done(); }
+    });
+  });
+  update();
+})();

@@ -1,0 +1,25 @@
+{
+  "name": "ogforge",
+  "version": "0.2.2",
+  "private": true,
+  "description": "Freemium Open Graph (1200x630 PNG) social-preview image API on Cloudflare Workers (satori + resvg-wasm), with caching and free-tier caps",
+  "type": "module",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy"
+  },
+  "dependencies": {
+    "@resvg/resvg-wasm": "2.6.2",
+    "satori": "0.15.2",
+    "yoga-wasm-web": "0.3.3"
+  },
+  "devDependencies": {
+    "@fontsource/inter": "5.3.0",
+    "@fontsource/jetbrains-mono": "5.3.0",
+    "wrangler": "3.114.17"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "license": "MIT"
+}

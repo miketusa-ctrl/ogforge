@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>OgForge docs – Open Graph image API</title>
+<meta name="description" content="OgForge API reference: GET /api/og parameters, templates, colors, caching, free-tier limits and error codes.">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/style.css">
+</head>
+<body class="doc">
+<header class="top">
+  <div class="wrap nav">
+    <a class="brand" href="/"><img src="/favicon.svg" width="24" height="24" alt=""> OgForge</a>
+    <nav><a href="/#templates">Templates</a><a href="/playground">Playground</a><a href="/docs" aria-current="page">Docs</a><a href="/pricing">Pricing</a></nav>
+  </div>
+</header>
+<main class="wrap">
+<h1 class="doc-h1">API reference</h1>
+<p class="lead">One endpoint. Every unique combination of parameters is rendered once and then cached.</p>
+<p>Contents: <a href="#endpoint">Endpoint</a> · <a href="#params">Parameters</a> · <a href="#templates">Templates</a> · <a href="#examples">Examples</a> · <a href="#caching">Caching</a> · <a href="#limits">Limits</a> · <a href="#errors">Errors</a> · <a href="#keys">API keys</a> · <a href="#other">Other endpoints</a> · <a href="#acceptable-use">Acceptable use</a> · <a href="#privacy">Privacy</a></p>
+<p class="note"><strong>Acceptable use:</strong> no impersonation, phishing or illegal content. Matching requests get <code>403 blocked_content</code> and reported images are taken down.</p>
+
+<h2 id="endpoint">Endpoint</h2>
+<pre><code>GET {{ORIGIN}}/api/og?template=blog&amp;title=Hello%20world</code></pre>
+<p>Returns a <strong>1200×630 PNG</strong> (<code>Content-Type: image/png</code>). <code>HEAD</code> is supported, and <code>/og.png</code> is an alias of <code>/api/og</code> for platforms that want a <code>.png</code> path. CORS is open (<code>Access-Control-Allow-Origin: *</code>) and images can be embedded from any site.</p>
+
+<h2 id="params">Parameters</h2>
+<p>All parameters are optional query-string values. URL-encode them. Unknown parameters are ignored and don't affect caching.</p>
+<table class="tbl">
+<tr><th>Name</th><th>Type / limit</th><th>Description</th></tr>
+<tr><td><code>template</code> (alias <code>t</code>)</td><td><code>blog</code> | <code>launch</code> | <code>docs</code> | <code>minimal</code> | <code>gradient</code></td><td>Layout. Default <code>blog</code>.</td></tr>
+<tr><td><code>title</code></td><td>text, 120 chars</td><td>Main headline. The font size shrinks for long titles, and anything over 3 lines is clipped with “…”. Default “Untitled”.</td></tr>
+<tr><td><code>subtitle</code> (alias <code>description</code>)</td><td>text, 200 chars</td><td>Secondary line (max 2 lines shown).</td></tr>
+<tr><td><code>label</code> (alias <code>tag</code>)</td><td>text, 40 chars</td><td>Category (blog), pill (launch), version (docs) or eyebrow (gradient). Not shown in <code>minimal</code>.</td></tr>
+<tr><td><code>site</code></td><td>text, 60 chars</td><td>Site or product name / domain.</td></tr>
+<tr><td><code>author</code></td><td>text, 60 chars</td><td>Author name (blog), or the breadcrumb section (docs).</td></tr>
+<tr><td><code>emoji</code></td><td>one emoji</td><td>Shown as the logo mark (Twemoji graphics). Ignored when <code>logo</code> loads.</td></tr>
+<tr><td><code>logo</code></td><td>https URL, 512 chars</td><td>PNG, JPEG or SVG, at most 300 KB, fetched with a 3 s timeout. Must be a public <code>https://</code> hostname (no IPs, credentials or custom ports). If it can't be loaded, the image renders without it, is cached for only 5 minutes, and carries an <code>X-OgForge-Warning</code> header.</td></tr>
+<tr><td><code>theme</code></td><td><code>light</code> | <code>dark</code></td><td>Base palette. Defaults: blog/minimal light; launch/docs dark.</td></tr>
+<tr><td><code>bg</code></td><td>hex color</td><td>Background (<code>0f172a</code>, <code>#0f172a</code> or <code>fff</code>). For <code>gradient</code> it's the <em>end</em> color (default <code>db2777</code>).</td></tr>
+<tr><td><code>fg</code></td><td>hex color</td><td>Text color. If omitted with a custom <code>bg</code>, black or white is picked for contrast.</td></tr>
+<tr><td><code>accent</code></td><td>hex color</td><td>Accent bar, pills and highlights. For <code>gradient</code> it's the <em>start</em> color (default <code>6366f1</code>).</td></tr>
+</table>
+<p class="small">Text is cleaned (control characters removed, whitespace collapsed). Text longer than its limit is <strong>truncated with “…”</strong> rather than rejected, and the response carries <code>X-OgForge-Truncated: title,subtitle</code>. The whole query string may be at most 2,000 characters. Bundled fonts cover Latin scripts (incl. accents); other scripts aren't supported yet.</p>
+
+<h2 id="templates">Templates</h2>
+<table class="tbl">
+<tr><th>Template</th><th>Default theme</th><th>Uses</th></tr>
+<tr><td><code>blog</code></td><td>light</td><td>label, title, subtitle, emoji/logo, site, author</td></tr>
+<tr><td><code>launch</code></td><td>dark</td><td>emoji/logo tile, label pill, title, subtitle, site · author</td></tr>
+<tr><td><code>docs</code></td><td>dark</td><td>emoji/logo, site / author breadcrumb (monospace), label as version pill, title, subtitle</td></tr>
+<tr><td><code>minimal</code></td><td>light</td><td>title, subtitle, emoji/logo, site · author</td></tr>
+<tr><td><code>gradient</code></td><td>white text on accent→bg gradient</td><td>emoji/logo, label, title, subtitle, site · author</td></tr>
+</table>
+<p>Machine-readable list: <a href="/api/templates"><code>/api/templates</code></a>. See them all on the <a href="/#templates">home page</a> or try them in the <a href="/playground">playground</a>.</p>
+
+<h2 id="examples">Examples</h2>
+<pre><code>curl -o og.png "{{ORIGIN}}/api/og?template=launch&amp;title=Introducing%20Nimbus%202.0&amp;label=Now%20live&amp;emoji=%F0%9F%9A%80"
+
+curl -o og.png "{{ORIGIN}}/api/og?template=docs&amp;title=Rate%20limits&amp;label=v1.4.0&amp;site=acme%20docs&amp;author=API"
+
+curl -o og.png "{{ORIGIN}}/api/og?template=gradient&amp;title=Big%20news&amp;accent=0ea5e9&amp;bg=22c55e"</code></pre>
+<h3>JavaScript</h3>
+<pre><code>const params = new URLSearchParams({ template: 'blog', title: post.title, subtitle: post.excerpt, site: 'example.com' });
+const ogImage = `{{ORIGIN}}/api/og?${params}`;</code></pre>
+<h3>HTML</h3>
+<pre><code>&lt;meta property="og:image" content="{{ORIGIN}}/api/og?template=minimal&amp;amp;title=Hello"&gt;
+&lt;meta property="og:image:width" content="1200"&gt;
+&lt;meta property="og:image:height" content="630"&gt;
+&lt;meta name="twitter:card" content="summary_large_image"&gt;
+&lt;meta name="twitter:image" content="{{ORIGIN}}/api/og?template=minimal&amp;amp;title=Hello"&gt;</code></pre>
+
+<h2 id="caching">Caching</h2>
+<ul>
+<li>The cache key is a SHA-256 of the <em>normalized</em> parameters (template, theme, cleaned and truncated text, emoji, logo URL, lower-case 6-digit colors) plus the renderer version. Parameter order, unknown parameters and <code>#</code> in colors don't matter.</li>
+<li>Successful images are sent with <code>Cache-Control: public, max-age=31536000, immutable</code> and an <code>ETag</code>; <code>If-None-Match</code> returns <code>304</code>.</li>
+<li>Server side, renders are kept in an in-memory cache and in Cloudflare's Cache API. <code>X-OgForge-Cache</code> tells you which layer answered: <code>MISS</code> (rendered now), <code>HIT-MEMORY</code>, <code>HIT-EDGE</code> or <code>REVALIDATED</code> (304).</li>
+<li>To get a fresh image, change a real parameter (title, colors, …). Unknown parameters such as <code>v=2</code> are ignored and do <em>not</em> bust the cache.</li>
+</ul>
+
+<h2 id="limits">Free-tier limits</h2>
+<table class="tbl">
+<tr><th>Limit</th><th>Value</th><th>Notes</th></tr>
+<tr><td>Image requests per IP</td><td>about 120 / minute</td><td>All <code>/api/og</code> requests, cached or not.</td></tr>
+<tr><td>New renders per IP</td><td>about 20 / minute</td><td>Only cache misses count. Cached images don't.</td></tr>
+<tr><td>New renders, whole service</td><td>about 60 / minute per Cloudflare location</td><td>Protects the free renderer. Returns <code>429 busy</code>.</td></tr>
+<tr><td>Badge</td><td>“ogforge” in the bottom-right corner</td><td>Free renders only. Pro (coming soon) removes it.</td></tr>
+<tr><td>Output</td><td>1200×630 PNG</td><td>Other sizes and formats aren't available yet.</td></tr>
+</table>
+<p class="small">Limits are approximate (counted per Cloudflare location) and may change. A <code>429</code> includes <code>Retry-After: 60</code>.</p>
+
+<h2 id="errors">Errors</h2>
+<p>Errors are JSON with <code>Cache-Control: no-store</code>:</p>
+<pre><code>{ "error": { "code": "invalid_color", "message": "\"accent\" must be a hex color like 0f172a or #0f172a (3 or 6 hex digits).", "field": "accent" } }</code></pre>
+<table class="tbl">
+<tr><th>Status</th><th>Code</th><th>When</th></tr>
+<tr><td>400</td><td><code>invalid_template</code></td><td>Unknown <code>template</code>.</td></tr>
+<tr><td>400</td><td><code>invalid_theme</code></td><td><code>theme</code> isn't light or dark.</td></tr>
+<tr><td>400</td><td><code>invalid_color</code></td><td><code>bg</code>, <code>fg</code> or <code>accent</code> isn't a 3- or 6-digit hex color.</td></tr>
+<tr><td>400</td><td><code>invalid_emoji</code></td><td><code>emoji</code> isn't exactly one emoji.</td></tr>
+<tr><td>400</td><td><code>invalid_logo</code></td><td><code>logo</code> isn't a public https URL.</td></tr>
+<tr><td>400</td><td><code>param_too_long</code></td><td><code>logo</code> URL longer than 512 characters.</td></tr>
+<tr><td>414</td><td><code>query_too_long</code></td><td>Query string over 2,000 characters.</td></tr>
+<tr><td>403</td><td><code>blocked_content</code></td><td>Text or logo host matches the acceptable-use denylist, or the image was taken down. The matched term isn't echoed back; <code>field</code> says which parameter matched, when applicable.</td></tr>
+<tr><td>405</td><td><code>method_not_allowed</code></td><td>Anything except GET, HEAD or OPTIONS.</td></tr>
+<tr><td>429</td><td><code>rate_limited</code></td><td>Per-IP request or render limit hit. Includes <code>limit</code>, <code>window</code> and <code>scope</code>.</td></tr>
+<tr><td>429</td><td><code>busy</code></td><td>Service-wide render cap hit. Cached images still work.</td></tr>
+<tr><td>500</td><td><code>render_failed</code> / <code>internal_error</code></td><td>Unexpected failure. Please retry.</td></tr>
+</table>
+
+<h2 id="keys">API keys (coming soon)</h2>
+<p>There is no paid plan yet, and no key is needed. A future Pro tier will accept a key <strong>only in a header</strong> (<code>X-Api-Key: …</code> or <code>Authorization: Bearer …</code>), never in the query string, because image URLs end up in public HTML. Until then, requests that send a key are served as free tier and get an <code>X-OgForge-Note</code> header saying so.</p>
+
+<h2 id="other">Other endpoints</h2>
+<ul>
+<li><a href="/api/templates"><code>GET /api/templates</code></a>: templates, descriptions and text limits (JSON).</li>
+<li><a href="/api/health"><code>GET /api/health</code></a>: service status and version (JSON).</li>
+</ul>
+<h2 id="acceptable-use">Acceptable use</h2>
+<p>Don't use OgForge for impersonation (pretending to be a brand, person or organization you don't represent), phishing, or illegal content. OgForge keeps a denylist of phrases (checked in <code>title</code>, <code>subtitle</code>, <code>label</code>, <code>site</code> and <code>author</code>, ignoring case, accents and punctuation), of logo hosts, and of individual images. It is checked before the cache, so a taken-down image stops being served right away (copies already cached by other services may persist until they expire). Report abuse to <a href="mailto:digitalpromohub.support@gmail.com">digitalpromohub.support@gmail.com</a>.</p>
+
+<h2 id="privacy">Privacy</h2>
+<ul>
+<li>No request logs, cookies or analytics. Your IP address is used only in short-lived rate-limit counters.</li>
+<li>Image text is stored only inside the cached image (server memory and Cloudflare's cache).</li>
+<li><strong>Logo URLs are fetched server-side by OgForge</strong> (from Cloudflare's network, user agent <code>OgForge/0.1</code>), so the logo host sees a request from OgForge, never from the people viewing your page.</li>
+<li><strong>Emoji graphics are loaded from jsDelivr</strong> (<code>cdn.jsdelivr.net</code>, Twemoji) server-side when an image contains emoji.</li>
+</ul>
+
+<h3>Response headers on images</h3>
+<table class="tbl">
+<tr><th>Header</th><th>Meaning</th></tr>
+<tr><td><code>X-OgForge-Cache</code></td><td><code>MISS</code>, <code>HIT-MEMORY</code>, <code>HIT-EDGE</code> or <code>REVALIDATED</code></td></tr>
+<tr><td><code>X-OgForge-Tier</code></td><td><code>free</code> (only tier today)</td></tr>
+<tr><td><code>X-OgForge-Truncated</code></td><td>Comma-separated fields that were cut to their limit</td></tr>
+<tr><td><code>X-OgForge-Warning</code></td><td>e.g. <code>logo_fetch_failed</code>, <code>logo_unsupported_type</code>, <code>logo_too_large</code>, <code>logo_http_404</code></td></tr>
+<tr><td><code>ETag</code></td><td>Cache-key hash, for <code>If-None-Match</code></td></tr>
+</table>
+</main>
+<footer class="foot">
+  <div class="wrap">
+    <p><a href="/">Home</a> · <a href="/playground">Playground</a> · Contact: <a href="mailto:digitalpromohub.support@gmail.com">digitalpromohub.support@gmail.com</a> · Emoji graphics by <a href="https://github.com/jdecked/twemoji" target="_blank" rel="noopener noreferrer">Twemoji</a> (CC-BY 4.0) · Fonts: Inter and JetBrains Mono (SIL OFL 1.1)</p>
+  </div>
+</footer>
+</body>
+</html>

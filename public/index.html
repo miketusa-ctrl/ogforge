@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>OgForge – Open Graph images from a URL</title>
+<meta name="description" content="OgForge turns a URL with a title into a 1200×630 PNG social preview image. Five templates, emoji and logos, custom colors, edge-cached. Free tier, no sign-up.">
+<meta property="og:title" content="OgForge – Open Graph images from a URL">
+<meta property="og:description" content="1200×630 social preview images from query parameters. Free tier, no sign-up.">
+<meta property="og:image" content="{{ORIGIN}}/api/og?template=gradient&amp;title=Open%20Graph%20images%20from%20a%20URL&amp;subtitle=Five%20templates%2C%20emoji%2C%20logos%20and%20custom%20colors.&amp;label=OgForge&amp;emoji=%E2%9C%A8">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/style.css">
+<link rel="alternate" type="text/plain" href="/llms.txt" title="llms.txt">
+<link rel="service-desc" type="application/json" href="/openapi.json" title="OpenAPI 3.1">
+</head>
+<body>
+<header class="top">
+  <div class="wrap nav">
+    <a class="brand" href="/"><img src="/favicon.svg" width="24" height="24" alt=""> OgForge</a>
+    <nav><a href="/#templates">Templates</a><a href="/playground">Playground</a><a href="/docs">Docs</a><a href="/pricing">Pricing</a></nav>
+  </div>
+</header>
+
+<main>
+<section class="hero">
+  <div class="wrap hero-grid">
+    <div>
+      <h1>Social preview images from a single URL</h1>
+      <p class="lead">OgForge renders a 1200×630 PNG Open Graph image from query parameters: title, subtitle, label, emoji or logo, colors and one of five templates. Put the URL in your <code>og:image</code> tag and you're done. No sign-up, no SDK.</p>
+      <div class="btns"><a class="btn" href="/playground">Open the playground</a><a class="btn ghost" href="/docs">Read the docs</a></div>
+      <p class="hint">Works with X/Twitter, LinkedIn, Facebook, Slack, Discord, iMessage and anything else that reads Open Graph tags.</p>
+    </div>
+    <img class="shot" src="/api/og?template=gradient&amp;title=Ship%20faster%20with%20OgForge&amp;subtitle=Beautiful%20social%20preview%20images%20from%20a%20single%20URL.&amp;label=Open%20Graph%20API&amp;emoji=%E2%9C%A8" width="1200" height="630" alt="Example OgForge image: gradient template reading 'Ship faster with OgForge'">
+  </div>
+</section>
+
+<section class="wrap" id="how">
+  <h2>How it works</h2>
+  <p>Build an image URL, then reference it from your page's head. The first request renders the PNG; repeat requests are served from cache.</p>
+  <pre><code>&lt;meta property="og:image" content="{{ORIGIN}}/api/og?template=blog&amp;amp;title=My%20first%20post&amp;amp;site=example.com"&gt;
+&lt;meta property="og:image:width" content="1200"&gt;
+&lt;meta property="og:image:height" content="630"&gt;
+&lt;meta name="twitter:card" content="summary_large_image"&gt;</code></pre>
+  <p class="small">Tip: URL-encode every value (<code>encodeURIComponent</code> in JavaScript, <code>urllib.parse.quote</code> in Python). The <a href="/playground">playground</a> builds the URL and meta tags for you.</p>
+</section>
+
+<section class="wrap" id="templates">
+  <h2>Five templates</h2>
+  <div class="grid">
+    <article class="card tpl">
+      <a href="/playground?template=blog&amp;title=How%20we%20cut%20our%20API%20latency%20by%2060%25&amp;subtitle=A%20practical%20walkthrough%20of%20edge%20caching%20on%20Cloudflare%20Workers.&amp;label=Engineering&amp;site=example.dev&amp;author=Jane%20Doe&amp;emoji=%E2%9A%A1"><img class="shot" loading="lazy" src="/api/og?template=blog&amp;title=How%20we%20cut%20our%20API%20latency%20by%2060%25&amp;subtitle=A%20practical%20walkthrough%20of%20edge%20caching%20on%20Cloudflare%20Workers.&amp;label=Engineering&amp;site=example.dev&amp;author=Jane%20Doe&amp;emoji=%E2%9A%A1" width="1200" height="630" alt="Blog template example"></a>
+      <h3><code>blog</code>: Blog post</h3><p>Category label, big title, subtitle, and an author/site footer with your logo or an emoji.</p>
+    </article>
+    <article class="card tpl">
+      <a href="/playground?template=launch&amp;title=Introducing%20Nimbus%202.0&amp;subtitle=Realtime%20dashboards%20for%20every%20team.&amp;label=Now%20live&amp;site=nimbus.app&amp;emoji=%F0%9F%9A%80"><img class="shot" loading="lazy" src="/api/og?template=launch&amp;title=Introducing%20Nimbus%202.0&amp;subtitle=Realtime%20dashboards%20for%20every%20team.&amp;label=Now%20live&amp;site=nimbus.app&amp;emoji=%F0%9F%9A%80" width="1200" height="630" alt="Launch template example"></a>
+      <h3><code>launch</code>: Product launch</h3><p>Centered logo tile, a "now live" pill and a bold headline on a soft gradient.</p>
+    </article>
+    <article class="card tpl">
+      <a href="/playground?template=docs&amp;title=Authentication%20%26%20API%20keys&amp;subtitle=Create%2C%20rotate%20and%20scope%20keys%20for%20the%20REST%20API.&amp;label=v2.3.0&amp;site=acme%20docs&amp;author=Guides&amp;emoji=%F0%9F%93%98"><img class="shot" loading="lazy" src="/api/og?template=docs&amp;title=Authentication%20%26%20API%20keys&amp;subtitle=Create%2C%20rotate%20and%20scope%20keys%20for%20the%20REST%20API.&amp;label=v2.3.0&amp;site=acme%20docs&amp;author=Guides&amp;emoji=%F0%9F%93%98" width="1200" height="630" alt="Docs template example"></a>
+      <h3><code>docs</code>: Docs / changelog</h3><p>Monospace breadcrumb and version pill. Made for docs pages and release notes.</p>
+    </article>
+    <article class="card tpl">
+      <a href="/playground?template=minimal&amp;title=Notes%20on%20building%20calm%20software&amp;subtitle=Fewer%20notifications%2C%20better%20defaults.&amp;site=quietdev.blog&amp;author=Sam%20Lee"><img class="shot" loading="lazy" src="/api/og?template=minimal&amp;title=Notes%20on%20building%20calm%20software&amp;subtitle=Fewer%20notifications%2C%20better%20defaults.&amp;site=quietdev.blog&amp;author=Sam%20Lee" width="1200" height="630" alt="Minimal template example"></a>
+      <h3><code>minimal</code>: Minimal</h3><p>A large title, a thin accent rule and a small site line. Nothing else.</p>
+    </article>
+    <article class="card tpl">
+      <a href="/playground?template=gradient&amp;title=Ship%20faster%20with%20OgForge&amp;subtitle=Beautiful%20social%20preview%20images%20from%20a%20single%20URL.&amp;label=Open%20Graph%20API&amp;emoji=%E2%9C%A8"><img class="shot" loading="lazy" src="/api/og?template=gradient&amp;title=Ship%20faster%20with%20OgForge&amp;subtitle=Beautiful%20social%20preview%20images%20from%20a%20single%20URL.&amp;label=Open%20Graph%20API&amp;emoji=%E2%9C%A8" width="1200" height="630" alt="Gradient template example"></a>
+      <h3><code>gradient</code>: Gradient</h3><p>A vivid diagonal gradient (pick both colors) with white text on a glass card.</p>
+    </article>
+  </div>
+</section>
+
+<section class="wrap" id="features">
+  <h2>What you get</h2>
+  <div class="grid">
+    <article class="card"><h3>Fast and cached</h3><p>Each unique set of parameters is rendered once, then served from memory and Cloudflare's cache with a one-year <code>Cache-Control</code> and an <code>ETag</code>.</p></article>
+    <article class="card"><h3>Your brand</h3><p>Custom background, text and accent colors, light or dark theme, an emoji (Twemoji) or your own PNG/JPEG/SVG logo.</p></article>
+    <article class="card"><h3>Safe inputs</h3><p>Long text is trimmed with an ellipsis instead of breaking the layout. Invalid values return a clear JSON error with a code.</p></article>
+    <article class="card"><h3>Simple API</h3><p>One GET endpoint, CORS enabled, no key needed. Bundled Inter and JetBrains Mono fonts.</p></article>
+  </div>
+</section>
+
+<section class="wrap" id="pricing">
+  <h2>Pricing</h2>
+  <div class="pricing">
+    <div class="plan">
+      <h3>Free</h3>
+      <div class="price">$0</div>
+      <ul>
+        <li>All 5 templates, colors, emoji and logos</li>
+        <li>About 20 new (uncached) renders per minute per IP</li>
+        <li>About 120 image requests per minute per IP (cached images are cheap)</li>
+        <li>Small “ogforge” badge in the corner</li>
+        <li>No sign-up, no API key</li>
+      </ul>
+    </div>
+    <div class="plan soon">
+      <h3>Pro <span class="pill">Coming soon</span></h3>
+      <div class="price">—</div>
+      <ul>
+        <li>No badge</li>
+        <li>Higher render limits with an API key</li>
+        <li>Custom fonts and templates</li>
+      </ul>
+      <p class="small">Paid plans are not available yet. Nothing is for sale.</p>
+    </div>
+  </div>
+  <p class="small">Limits are approximate and enforced per Cloudflare location. See the <a href="/pricing">pricing page</a> and <a href="/docs#limits">limits and error codes</a>.</p>
+</section>
+<section id="agents" class="wrap"><h2>For AI agents (MCP)</h2>
+<p>OgForge is also a remote <a href="https://modelcontextprotocol.io/" target="_blank" rel="noopener noreferrer">Model Context Protocol</a> (MCP) server with one tool, <code>create_og_image</code>. Most MCP clients accept this config; some use a different format (for example, VS Code uses a <code>servers</code> key). Clients with a settings screen just need the URL <code>{{ORIGIN}}/mcp</code>.</p>
+<pre><code id="mcp-config">{ "mcpServers": { "ogforge": { "type": "http", "url": "{{ORIGIN}}/mcp" } } }</code></pre>
+<p class="small">Machine-readable docs: <a href="/llms.txt">llms.txt</a> · <a href="/openapi.json">OpenAPI 3.1 spec</a></p></section>
+<section class="wrap" id="privacy">
+  <h2>Privacy &amp; acceptable use</h2>
+  <p>We don't keep request logs, set cookies or run analytics scripts. To count unique visitors per day, we keep a salted hash of your network (IP address grouped by /64 for IPv6) and the date, which rotates daily and is deleted after 9 days; no IP address is stored. The text you put in an image URL is stored only as part of the cached image (in server memory and Cloudflare's cache). Your IP address is used only in short-lived rate-limit counters. The site runs on Cloudflare Workers, and Cloudflare processes requests in order to serve it.</p>
+  <p><strong>Third-party requests:</strong> if you pass a <code>logo</code> URL, OgForge's server fetches that image itself (server-side, from Cloudflare, not from your visitors' browsers), so the logo's host sees a request from OgForge. Emoji graphics (Twemoji) are loaded server-side from the jsDelivr CDN (<code>cdn.jsdelivr.net</code>) when an image contains emoji. Visitors who view a generated image only ever contact OgForge.</p>
+  <p><strong>Acceptable use:</strong> no impersonation, phishing or illegal content. Requests that match our denylist are refused with a <code>403</code>, and reported images are taken down. Report abuse to <a href="mailto:digitalpromohub.support@gmail.com">digitalpromohub.support@gmail.com</a>.</p>
+</section>
+</main>
+
+<footer class="foot">
+  <div class="wrap">
+    <p>OgForge renders Open Graph images on Cloudflare Workers. Acceptable use: don't use OgForge for impersonation, phishing or illegal content; such images are blocked and taken down.</p>
+    <p><a href="/playground">Playground</a> · <a href="/#privacy">Privacy</a> · <a href="/docs#acceptable-use">Acceptable use</a> · <a href="/docs">Docs</a> · Contact: <a href="mailto:digitalpromohub.support@gmail.com">digitalpromohub.support@gmail.com</a> · Emoji graphics by <a href="https://github.com/jdecked/twemoji" target="_blank" rel="noopener noreferrer">Twemoji</a> (CC-BY 4.0)</p>
+  </div>
+</footer>
+</body>
+</html>

@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>OgForge playground – build an Open Graph image URL</title>
+<meta name="description" content="Pick a template, type a title, see the 1200×630 Open Graph image live, and copy the URL and meta tags.">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/style.css">
+<script src="/playground.js" defer></script>
+</head>
+<body>
+<header class="top">
+  <div class="wrap nav">
+    <a class="brand" href="/"><img src="/favicon.svg" width="24" height="24" alt=""> OgForge</a>
+    <nav><a href="/#templates">Templates</a><a href="/playground" aria-current="page">Playground</a><a href="/docs">Docs</a><a href="/pricing">Pricing</a></nav>
+  </div>
+</header>
+<main class="wrap">
+  <h1 class="doc-h1">Playground</h1>
+  <p class="lead">Change the fields and the preview updates. Copy the image URL or the ready-made meta tags when you're happy.</p>
+  <div class="pg">
+    <form id="f" class="form" autocomplete="off" novalidate>
+      <div class="row">
+        <div><label for="template">Template</label>
+          <select id="template" name="template"><option value="blog">blog</option><option value="launch">launch</option><option value="docs">docs</option><option value="minimal">minimal</option><option value="gradient">gradient</option></select></div>
+        <div><label for="theme">Theme</label>
+          <select id="theme" name="theme"><option value="">default</option><option value="light">light</option><option value="dark">dark</option></select></div>
+      </div>
+      <label for="title">Title <span class="small">(max 120)</span></label>
+      <input type="text" id="title" name="title" maxlength="200" value="How we cut our API latency by 60%">
+      <label for="subtitle">Subtitle <span class="small">(max 200)</span></label>
+      <input type="text" id="subtitle" name="subtitle" maxlength="300" value="A practical walkthrough of edge caching on Cloudflare Workers.">
+      <div class="row">
+        <div><label for="label">Label <span class="small">(40)</span></label><input type="text" id="label" name="label" maxlength="60" value="Engineering"></div>
+        <div><label for="emoji">Emoji</label><input type="text" id="emoji" name="emoji" maxlength="16" value="⚡"></div>
+      </div>
+      <div class="row">
+        <div><label for="site">Site <span class="small">(60)</span></label><input type="text" id="site" name="site" maxlength="80" value="example.dev"></div>
+        <div><label for="author">Author <span class="small">(60)</span></label><input type="text" id="author" name="author" maxlength="80" value="Jane Doe"></div>
+      </div>
+      <label for="logo">Logo URL <span class="small">(https PNG/JPEG/SVG ≤ 300 KB, replaces emoji)</span></label>
+      <input type="url" id="logo" name="logo" maxlength="512" placeholder="https://example.com/logo.png">
+      <div class="row">
+        <div><label for="bg">Background</label><div class="color"><input type="color" id="bg-pick" aria-label="Pick background color" value="#ffffff"><input type="text" id="bg" name="bg" placeholder="auto" maxlength="7"></div></div>
+        <div><label for="fg">Text</label><div class="color"><input type="color" id="fg-pick" aria-label="Pick text color" value="#0f172a"><input type="text" id="fg" name="fg" placeholder="auto" maxlength="7"></div></div>
+      </div>
+      <label for="accent">Accent</label><div class="color"><input type="color" id="accent-pick" aria-label="Pick accent color" value="#4f46e5"><input type="text" id="accent" name="accent" placeholder="auto" maxlength="7"></div>
+      <p class="small">Leave colors empty for the template defaults. For <code>gradient</code>, accent is the start color and background the end color.</p>
+      <p><button type="button" class="sm" id="reset">Reset colors</button></p>
+    </form>
+    <section class="preview" aria-live="polite">
+      <img id="img" class="shot" width="1200" height="630" alt="Live preview of the generated Open Graph image">
+      <div id="status" class="status">Loading preview…</div>
+      <div class="out">
+        <label for="url">Image URL <button type="button" class="sm" data-copy="url">Copy</button></label>
+        <textarea id="url" class="code" readonly rows="3"></textarea>
+        <label for="meta">Meta tags <button type="button" class="sm" data-copy="meta">Copy</button></label>
+        <textarea id="meta" class="code" readonly rows="7"></textarea>
+        <p class="small">Free renders include a small “ogforge” badge. About 20 new renders per minute per IP; the preview waits until you stop typing.</p>
+      </div>
+    </section>
+  </div>
+</main>
+<footer class="foot">
+  <div class="wrap"><p><a href="/">Home</a> · <a href="/docs">Docs</a> · Contact: <a href="mailto:digitalpromohub.support@gmail.com">digitalpromohub.support@gmail.com</a></p></div>
+</footer>
+</body>
+</html>

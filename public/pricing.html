@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pricing – OgForge</title>
+<meta name="description" content="OgForge is free to use today: Open Graph images with no sign-up and no API key. Pro is coming soon.">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/style.css">
+</head>
+<body>
+<header class="top">
+  <div class="wrap nav">
+    <a class="brand" href="/"><img src="/favicon.svg" width="24" height="24" alt=""> OgForge</a>
+    <nav><a href="/#templates">Templates</a><a href="/playground">Playground</a><a href="/docs">Docs</a><a href="/pricing" aria-current="page">Pricing</a></nav>
+  </div>
+</header>
+<main>
+<section class="wrap" id="pricing">
+  <h1>Pricing</h1>
+  <p>OgForge is free to use today. There is no sign-up and no API key. Nothing is for sale yet.</p>
+  <div class="pricing">
+    <div class="plan" id="free">
+      <h2>Free</h2>
+      <div class="price">$0</div>
+      <ul>
+        <li>All {{TEMPLATE_COUNT}} templates, colors, emoji and logos</li>
+        <li>About {{RENDER_PER_MIN}} new (uncached) renders per minute per IP</li>
+        <li>About {{REQ_PER_MIN}} image requests per minute per IP (cached images don't count toward the render limit)</li>
+        <li>About {{GLOBAL_RENDER_PER_MIN}} new renders per minute for the whole service</li>
+        <li>Images cached for a year at the edge</li>
+        <li>MCP server for AI agents with the same limits</li>
+        <li>Small “ogforge” badge in the corner</li>
+      </ul>
+      <p><a class="btn" href="/playground">Try it in the playground</a></p>
+    </div>
+    <div class="plan soon" id="pro">
+      <h2>Pro <span class="pill">Coming soon</span></h2>
+      <ul>
+        <li>No badge</li>
+        <li>Higher render limits with an API key</li>
+        <li>Custom fonts and templates</li>
+      </ul>
+      <p class="small">Pro isn't available yet and has no price. Nothing is for sale. If you send an API key today, it is ignored and the free tier applies.</p>
+    </div>
+  </div>
+  <p class="small">Limits are approximate and enforced per Cloudflare location. Over the limit you get HTTP 429 with a <code>Retry-After</code> header. See <a href="/docs#limits">limits and error codes</a>.</p>
+  <p class="small">Questions: <a href="mailto:{{SUPPORT_EMAIL}}">{{SUPPORT_EMAIL}}</a></p>
+</section>
+</main>
+<footer class="foot">
+  <div class="wrap">
+    <p><a href="/">Home</a> · <a href="/playground">Playground</a> · <a href="/docs">Docs</a> · <a href="/#privacy">Privacy</a> · <a href="/docs#acceptable-use">Acceptable use</a> · Contact: <a href="mailto:{{SUPPORT_EMAIL}}">{{SUPPORT_EMAIL}}</a></p>
+  </div>
+</footer>
+</body>
+</html>
