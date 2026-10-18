@@ -123,8 +123,14 @@ export async function authenticate(request, env) {
 
 export const REGISTRY_AUTH_RE = /^v=MCPv1; k=(ed25519|ecdsap384); p=[A-Za-z0-9+/=]{20,120}$/;
 const AGENT_DOCS = ['/llms.txt', '/openapi.json', '/.well-known/mcp/server-card.json', '/.well-known/mcp-registry-auth', '/.well-known/glama.json'];
-// Glama connector claim. Account-wide token; must stay published.
-export const GLAMA_CLAIM_BODY = '{"$schema":"https://glama.ai/mcp/schemas/connector.json","claim":"<GLAMA_CLAIM_TOKEN>"}';
+// Glama connector claim. The account-wide token comes from the GLAMA_CLAIM Worker secret (`wrangler versions secret
+// put GLAMA_CLAIM`), never hardcoded. Unset or malformed -> 404, so a bad secret can never publish a broken claim
+// body.
+const GLAMA_CLAIM_RE = /^[A-Za-z0-9_-]{16,128}$/; // token charset only: no quotes, spaces or newlines
+export function glamaClaimBody(env = {}) {
+  const claim = typeof env.GLAMA_CLAIM === 'string' ? env.GLAMA_CLAIM : '';
+  return GLAMA_CLAIM_RE.test(claim) ? JSON.stringify({ $schema: 'https://glama.ai/mcp/schemas/connector.json', claim }) : null;
+}
 // Daily unique visitors: human/API entry points only. Never /api/health, docs assets, robots, agent docs or cached image hits.
 const COUNTED = (path, method) => (method === 'GET' && (path === '/' || path === '/docs' || path === '/playground' || path === '/pricing'))
   || (method === 'POST' && path === '/mcp');
@@ -372,7 +378,10 @@ function createRouter({ pages = {}, render, cache = null, fetchImpl }) {
       if (path === '/llms.txt') return doc(llmsTxt(url.origin, PL), 'text/plain; charset=utf-8');
       if (path === '/openapi.json') return doc(JSON.stringify(openApiSpec(url.origin, PL), null, 2), 'application/json; charset=utf-8');
       if (path === '/.well-known/mcp/server-card.json') return doc(JSON.stringify(serverCard(url.origin), null, 2), 'application/json; charset=utf-8');
-      if (path === '/.well-known/glama.json') return doc(GLAMA_CLAIM_BODY, 'application/json');
+      if (path === '/.well-known/glama.json') {
+        const body = glamaClaimBody(env);
+        return body ? doc(body, 'application/json') : doc('Not found\n', 'text/plain; charset=utf-8', 'no-store', 404);
+      }
       const v = String(env.MCP_REGISTRY_AUTH || '');
       if (REGISTRY_AUTH_RE.test(v)) return doc(v, 'text/plain; charset=utf-8', 'no-store');
       return doc('Not found\n', 'text/plain; charset=utf-8', 'no-store', 404);
