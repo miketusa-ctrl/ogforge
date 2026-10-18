@@ -3,7 +3,7 @@
   "name": "dev.workers.mike-tusa.ogforge/ogforge",
   "title": "OgForge",
   "description": "Render 1200x630 Open Graph social preview images from templates; returns a cacheable PNG URL.",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "websiteUrl": "https://ogforge.mike-tusa.workers.dev/",
   "icons": [{ "src": "https://ogforge.mike-tusa.workers.dev/favicon.svg", "mimeType": "image/svg+xml", "sizes": ["any"] }],
   "remotes": [{ "type": "streamable-http", "url": "https://ogforge.mike-tusa.workers.dev/mcp",
