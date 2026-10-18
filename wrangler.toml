@@ -42,21 +42,18 @@ MCP_REGISTRY_AUTH = ""
 binding = "OGFORGE_KV"
 id = "<KV_NAMESPACE_ID>"
 
-[[unsafe.bindings]]
+[[ratelimits]]
 name = "REQ_LIMITER"
-type = "ratelimit"
 namespace_id = "<RATE_LIMIT_NAMESPACE_ID_1>"
 simple = { limit = 120, period = 60 }
 
-[[unsafe.bindings]]
+[[ratelimits]]
 name = "RENDER_LIMITER"
-type = "ratelimit"
 namespace_id = "<RATE_LIMIT_NAMESPACE_ID_2>"
 simple = { limit = 20, period = 60 }
 
-[[unsafe.bindings]]
+[[ratelimits]]
 name = "GLOBAL_LIMITER"
-type = "ratelimit"
 namespace_id = "<RATE_LIMIT_NAMESPACE_ID_3>"
 simple = { limit = 60, period = 60 }
 
@@ -84,20 +81,17 @@ MCP_REGISTRY_AUTH = ""
 binding = "OGFORGE_KV"
 id = "<PRODUCTION_KV_NAMESPACE_ID>"
 
-[[env.production.unsafe.bindings]]
+[[env.production.ratelimits]]
 name = "REQ_LIMITER"
-type = "ratelimit"
 namespace_id = "<RATE_LIMIT_NAMESPACE_ID_4>"
 simple = { limit = 120, period = 60 }
 
-[[env.production.unsafe.bindings]]
+[[env.production.ratelimits]]
 name = "RENDER_LIMITER"
-type = "ratelimit"
 namespace_id = "<RATE_LIMIT_NAMESPACE_ID_5>"
 simple = { limit = 20, period = 60 }
 
-[[env.production.unsafe.bindings]]
+[[env.production.ratelimits]]
 name = "GLOBAL_LIMITER"
-type = "ratelimit"
 namespace_id = "<RATE_LIMIT_NAMESPACE_ID_6>"
 simple = { limit = 60, period = 60 }
