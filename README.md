@@ -12,13 +12,26 @@ Render 1200x630 Open Graph social preview images from templates; returns a cache
 
 OgForge is a remote MCP server (Streamable HTTP) at `https://ogforge.mike-tusa.workers.dev/mcp`. Tools: `create_og_image`.
 
-Cursor, Cline and Windsurf accept this config:
+Cursor and Windsurf accept this config:
 
 ```json
 {
   "mcpServers": {
     "ogforge": {
       "type": "http",
+      "url": "https://ogforge.mike-tusa.workers.dev/mcp"
+    }
+  }
+}
+```
+
+Cline (MCP Servers > Remote Servers, or `cline_mcp_settings.json`) needs `"type": "streamableHttp"`:
+
+```json
+{
+  "mcpServers": {
+    "ogforge": {
+      "type": "streamableHttp",
       "url": "https://ogforge.mike-tusa.workers.dev/mcp"
     }
   }
@@ -41,6 +54,8 @@ npx wrangler@4 dev      # local dev server
 ```
 
 `wrangler.toml` is a template: create your own KV namespaces / D1 databases / rate-limit namespaces and replace the `<PLACEHOLDER>` values before `npx wrangler@4 deploy`. Any secrets the Worker reads go in `wrangler secret put` (or `.dev.vars` locally), never in the repo.
+
+Optional Worker secrets (leave unset if you do not need them): `GLAMA_CLAIM` (your glama.ai connector claim token, served at `/.well-known/glama.json`).
 
 ## Third-party data
 
